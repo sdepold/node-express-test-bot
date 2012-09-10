@@ -28,7 +28,11 @@ With options:
 new ExpressTestBot({
   // app: path to the file which starts the express server
   // default value: process.cwd() + '/app.js'
-  app: 'server.js'
+  app: 'server.js',
+
+  // debug: log some more information to stdout
+  // default value: false
+  debug: true
 }).get('/', {
   // toFile: writes the stdout output into a file. useful for images/binary files
   // default value: null

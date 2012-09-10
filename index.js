@@ -44,6 +44,7 @@ ExpressTestBot.prototype.request = function(cmd, callback) {
     this.startServer()
   }
 
+  this.log('Executing: ' + cmd)
   exec(cmd, function(err, stdout, stderr) {
     this.connections = this.connections - 1
 
@@ -59,11 +60,18 @@ ExpressTestBot.prototype.request = function(cmd, callback) {
 
 ExpressTestBot.prototype.startServer = function() {
   this.app.listen(this.getPort())
-  console.log("Express server listening on port %d", this.app.address().port)
+  this.log("Express server listening on port %d", this.app.address().port)
 }
 
 ExpressTestBot.prototype.killServer = function() {
   this.port = null
   this.app.close()
   this.app.__listening = false
+  this.log('Server was shut down.')
+}
+
+ExpressTestBot.prototype.log = function(message) {
+  if(this.options.debug) {
+    console.log(message)
+  }
 }
