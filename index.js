@@ -54,7 +54,7 @@ ExpressTestBot.prototype.request = function(cmd, callback) {
     if (this.connections === 0) {
       this.killServer()
     }
-  })
+  }.bind(this))
 }
 
 ExpressTestBot.prototype.startServer = function() {
