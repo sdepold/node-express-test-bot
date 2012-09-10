@@ -10,13 +10,21 @@ npm install express-test-bot
 
 ## API
 
+Load the library:
 ```js
 var ExpressTestBot = require('express-test-bot')
+```
 
-// default usage:
+
+Default usage:
+
+```js
 new ExpressTestBot().get('/', function(err, stdout, stderr) { })
+```
 
-// with options:
+
+With options:
+```js
 new ExpressTestBot({
   // app: path to the file which starts the express server
   // default value: process.cwd() + '/app.js'
