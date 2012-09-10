@@ -1,12 +1,11 @@
 var exec = require('child_process').exec
   , fs   = require('fs')
 
-// new ExpressTestBot({ app: 'app.js' }).get('/foo')
-
 var ExpressTestBot = module.exports = function(options) {
   this.connections = 0
   this.options     = options || {}
-  this.app         = require(options.app || process.cwd() + '/app.js')
+  this.app         = require(this.options.app || process.cwd() + '/app.js')
+  this.port        = null
 }
 
 ExpressTestBot.prototype.isRunning = function() {
@@ -18,14 +17,18 @@ ExpressTestBot.prototype.isRunning = function() {
 }
 
 ExpressTestBot.prototype.getPort = function() {
-  if (this.isRunning()) {
-    return this.app.address().port
+  if (this.port) {
+    return this.port
+  } else if (this.isRunning()) {
+    this.port = this.app.address().port
   } else {
-    return ~~(Math.random() * 5000) + 2000
+    this.port = ~~(Math.random() * 5000) + 2000
   }
+
+  return this.port
 }
 
-ExpressTestBot.prototype.get = function(optionsOrCallback, callbackOrNothing) {
+ExpressTestBot.prototype.get = function(path, optionsOrCallback, callbackOrNothing) {
   var url      = "http://localhost:" + this.getPort() + path
     , options  = (typeof optionsOrCallback === 'function') ? {} : optionsOrCallback
     , callback = (typeof optionsOrCallback === 'function') ? optionsOrCallback : callbackOrNothing
@@ -38,8 +41,7 @@ ExpressTestBot.prototype.request = function(cmd, callback) {
   this.connections = this.connections + 1
 
   if (!this.isRunning()) {
-    this.app.listen(port)
-    console.log("Express server listening on port %d", this.app.address().port)
+    this.startServer()
   }
 
   exec(cmd, function(err, stdout, stderr) {
@@ -49,10 +51,19 @@ ExpressTestBot.prototype.request = function(cmd, callback) {
       callback(err, stdout, stderr)
     }
 
-
     if (this.connections === 0) {
-      this.app.close()
-      this.app.__listening = false
+      this.killServer()
     }
   })
+}
+
+ExpressTestBot.prototype.startServer = function() {
+  this.app.listen(this.getPort())
+  console.log("Express server listening on port %d", this.app.address().port)
+}
+
+ExpressTestBot.prototype.killServer = function() {
+  this.port = null
+  this.app.close()
+  this.app.__listening = false
 }
