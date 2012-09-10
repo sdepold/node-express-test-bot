@@ -1,5 +1,5 @@
 {
-  "name": "node-express-test-bot",
+  "name": "express-test-bot",
   "version": "0.1.0",
   "description": "A little helper for test environments, that runs an express server, executes queries against it and kills the server afters.",
   "main": "index.js",
