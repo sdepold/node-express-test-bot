@@ -1,5 +1,6 @@
-var exec = require('child_process').exec
-  , fs   = require('fs')
+var exec     = require('child_process').exec
+  , execSync = require('exec-sync')
+  , fs       = require('fs')
 
 var ExpressTestBot = module.exports = function(options) {
   this.connections = 0
@@ -22,7 +23,16 @@ ExpressTestBot.prototype.getPort = function() {
   } else if (this.isRunning()) {
     this.port = this.app.address().port
   } else {
-    this.port = ~~(Math.random() * 5000) + 2000
+    while(!this.port) {
+      this.port = ~~(Math.random() * 5000) + 2000
+
+      var netStats      = execSync('netstat -an | grep LISTEN | grep ' + this.port)
+        , portAvailable = !!netStats.replace('\n', '').match(/^(\s*)$/)
+
+      if(!portAvailable) {
+        this.port = null
+      }
+    }
   }
 
   return this.port

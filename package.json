@@ -15,5 +15,8 @@
     "test"
   ],
   "author": "Sascha Depold <sascha@dawanda.com> (http://depold.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "exec-sync": "~0.1.4"
+  }
 }
