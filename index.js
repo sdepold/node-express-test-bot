@@ -73,9 +73,9 @@ ExpressTestBot.prototype.startServer = function() {
   this.log("Express server listening on port %d", this.app.address().port)
 }
 
-ExpressTestBot.prototype.killServer = function() {
+ExpressTestBot.prototype.killServer = function(callback) {
   this.port = null
-  this.app.close()
+  this.app.close(callback)
   this.app.__listening = false
   this.log('Server was shut down.')
 }
